@@ -1,0 +1,34 @@
+###################################### Part 1 - Load the functions ################################################
+
+### This code loads all of the functions from the Fred51 Library. 
+### Type help(Fred51) for more details about what is contained in the package.
+from importlib.machinery import SourceFileLoader
+Fred51 = SourceFileLoader("module.Fred51", "//fsg54ykf/StatisticalMethods/Statistical Methods Team Personnel Folder/Steven Henkel Folder/Henkel Cater/5460/Functions/Fred51.py").load_module()
+#This section allows you to reference the functions without having to prefix with Fred51.
+#To avoid the possibility of overwriting existing functions, set functionCallSimplifiy to False
+functionCallSimplify = True
+moduleName = "Fred51"
+if(functionCallSimplify):
+    for i in dir(Fred51):
+        if(not(i[0] == "_")):
+            exec(i + " = " + moduleName + "." + i)
+
+###################################### Part 2 - Load the SQL #######################################################
+
+with open ("BerylDataloadSQL.txt", "r") as sqlFile:
+    sqlBeryl=sqlFile.read()
+
+###################################### Part 3 - Run the SQL, Log and Email #########################################
+
+logSql = sqlRunner(sqlBeryl)
+logHandler(logSql,"BerylDataloadLog")
+
+emailFrom = "shenkel@blackberry.com"
+emailTo = "shenkel@blackberry.com"
+emailHost = "mail.rim.net"
+emailSubject = "Beryl Dataload Log"
+
+if(findIteration(logSql.lower(),"error: ora-",0)>=0):
+    emailSubject = "ERRORS - " + emailSubject
+    
+emailHandler(emailFrom, emailTo, emailHost, emailSubject,logSql)
